@@ -1,0 +1,173 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Allocation Using Graph Coloring Techniques | CSL 304</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'myapp/style.css' %}" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='60' font-size='70' font-weight='700' text-anchor='middle' fill='%231375f7'>&lt;/&gt;</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <nav class="container nav">
+      <a class="brand" href="#overview" aria-label="Project Home">
+        <span class="code-logo">&lt;/&gt;</span>
+        <span>CSL 304 • TA Project</span>
+      </a>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#project-info">Project Info</a>
+        <a href="#visualizer">Visualizer</a>
+        <a href="#comparison">Comparison</a>
+        <a href="#acknowledgement">Acknowledgement</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="overview">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Compilers TA Project Submission</div>
+          <h1>Register Allocation Using Graph Coloring Techniques</h1>
+          <p>
+            Proposed method: <strong>MOGRA</strong> (Multi-Objective Graph Register Allocation).
+            It extends classical graph coloring with architecture-aware scoring:
+            spill risk, move cost, size, bank conflict, and energy cost.
+          </p>
+          <div class="hero-actions">
+            <a href="#visualizer" class="btn btn-primary">Open Visualizer</a>
+            <a href="#comparison" class="btn btn-outline">See Comparison</a>
+          </div>
+        </div>
+
+        <div class="mock">
+          <h3>Project Snapshot</h3>
+          <div class="mini-grid">
+            <div class="kpi"><span>Course</span><strong>Compilers</strong></div>
+            <div class="kpi"><span>Code</span><strong>CSL 304</strong></div>
+            <div class="kpi"><span>Institute</span><strong>IIIT Nagpur</strong></div>
+            <div class="kpi"><span>Method</span><strong>MOGRA</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container info-card" id="project-info">
+      <div class="section-head">Project Information and Team Members</div>
+      <div class="info-grid">
+        <div>
+          <ul class="info-list">
+            <li><strong>Course Name:</strong> Compilers</li>
+            <li><strong>Course Code:</strong> CSL 304</li>
+            <li><strong>Instructor:</strong> Dr. Anil Kumar Kushwah</li>
+            <li><strong>Designation:</strong> Assistant Professor</li>
+            <li><strong>Department:</strong> Computer Science Dept.</li>
+            <li><strong>Institute:</strong> IIIT Nagpur</li>
+          </ul>
+        </div>
+        <div id="team">
+          <table class="team-table">
+            <thead><tr><th>Name</th><th>Roll Number</th></tr></thead>
+            <tbody>
+              <tr><td>Karri Tirumala Venkatesh</td><td>BT23CSE214</td></tr>
+              <tr><td>Ayush Milind Dhoble</td><td>BT23CSE204</td></tr>
+              <tr><td>Sujay Jayesh Kamble</td><td>BT22CSE034</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="visualizer">
+      <h2>Interactive Graph-Coloring Visualizer</h2>
+      <p class="lead">Input parameters below and run both allocators on the same generated interference graph.</p>
+
+      <div class="viz-wrap">
+        <div class="viz-controls">
+          <label>Registers (K)
+            <input id="kReg" type="range" min="2" max="12" value="6">
+            <span id="kRegVal">6</span>
+          </label>
+          <label>Variables (N)
+            <input id="nVar" type="range" min="6" max="40" value="18">
+            <span id="nVarVal">18</span>
+          </label>
+          <label>Interference Density
+            <input id="density" type="range" min="10" max="85" value="42">
+            <span id="densityVal">42%</span>
+          </label>
+          <label>Move-Preference Density
+            <input id="moveDensity" type="range" min="0" max="70" value="22">
+            <span id="moveDensityVal">22%</span>
+          </label>
+          <label>Seed
+            <input id="seed" type="number" min="1" value="42">
+          </label>
+
+          <div class="actions">
+            <button id="btnGenerate" class="btn btn-outline" type="button">Generate Graph</button>
+            <button id="btnRun" class="btn btn-primary" type="button">Run Allocation</button>
+          </div>
+        </div>
+
+        <div class="viz-panels">
+          <article class="panel">
+            <h3>Classical Graph Coloring</h3>
+            <svg id="graphClassical" class="graph"></svg>
+            <div id="legendClassical" class="legend"></div>
+          </article>
+
+          <article class="panel">
+            <h3>MOGRA (Proposed)</h3>
+            <svg id="graphMogra" class="graph"></svg>
+            <div id="legendMogra" class="legend"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="comparison">
+      <h2>Comparison</h2>
+      <p class="lead">Metrics from the same graph instance.</p>
+      <div class="compare-card">
+        <table class="compare-table">
+          <thead>
+            <tr><th>Metric</th><th>Classical</th><th>MOGRA</th></tr>
+          </thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+      <div id="traceOut" class="trace"></div>
+    </section>
+
+    <section class="section container" id="acknowledgement">
+      <h2>Acknowledgement</h2>
+      <div class="ack-card">
+        <p>
+          Special thanks to <span class="ack-name">Dr. Anil Kumar Kushwah</span>, Faculty for the Compilers Course (CSL 304) 
+          2025–26, Department of Computer Science, IIIT Nagpur, for his continuous support 
+          towards the completion of this project and throughout the course of Compilers.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container foot">
+      <div>© 2026 CSL 304 Compilers TA Submission • IIIT Nagpur</div>
+      <div class="mini">
+        <a href="#overview">Top</a>
+        <a href="#visualizer">Visualizer</a>
+        <a href="#acknowledgement">Acknowledgement</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'myapp/visualizer.js' %}"></script>
+</body>
+</html>

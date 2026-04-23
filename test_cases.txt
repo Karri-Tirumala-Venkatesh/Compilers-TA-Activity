@@ -1,0 +1,58 @@
+Register Allocation Visualizer - Suggested Test Cases
+=====================================================
+
+How to use:
+1) Start server: python manage.py runserver
+2) Open homepage in browser
+3) Set sliders/seed
+4) Click "Generate Graph" then "Run Allocation"
+5) Compare Classical vs MOGRA metrics + graph colors/spills
+
+-----------------------------------------------------
+TC1: Easy / Low Pressure
+K=8, N=10, Interference=20%, MovePref=10%, Seed=42
+Expected:
+- Very low or zero spills
+- Both algorithms assign most/all variables
+- Similar runtime
+
+TC2: Balanced
+K=6, N=18, Interference=42%, MovePref=22%, Seed=42
+Expected:
+- Moderate spill pressure
+- MOGRA should often reduce move/bank/energy metrics
+
+TC3: Tight Registers
+K=4, N=20, Interference=60%, MovePref=35%, Seed=42
+Expected:
+- Noticeable spills
+- MOGRA may preserve high-priority variables better
+
+TC4: Stress
+K=3, N=24, Interference=75%, MovePref=50%, Seed=42
+Expected:
+- Heavy spilling
+- Clear distinction in decision trace and spill candidates
+
+TC5: Sparse Graph
+K=6, N=16, Interference=10%, MovePref=15%, Seed=99
+Expected:
+- Minimal spills
+- Stable assignments across repeated runs with same seed
+
+-----------------------------------------------------
+Regression / Stability Checks
+A) Same seed reproducibility:
+   Run same inputs 3 times -> graph/metrics should match.
+
+B) Seed variation:
+   Change seed only (42 -> 99) -> graph and results should change.
+
+C) Boundary checks:
+   - Minimum K: 2, N: 6
+   - Higher load: K: 12, N: 40
+   Ensure page remains responsive and API returns valid JSON.
+
+D) API health (optional manual):
+POST /api/allocate/ with valid JSON payload
+Expected: JSON response with "classical" and "mogra" objects.
