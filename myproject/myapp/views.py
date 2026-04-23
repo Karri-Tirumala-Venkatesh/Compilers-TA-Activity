@@ -6,6 +6,7 @@ import json
 import time
 import traceback
 from .allocator import MOGRAAllocator, simple_allocate
+from .tac_parser import parse_tac_to_graph
 
 
 def home(request):
@@ -88,3 +89,22 @@ def api_allocate(request):
 
     except Exception as e:
         return JsonResponse({"error": f"Allocation error: {str(e)}\n{traceback.format_exc()}"}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def api_parse_tac(request):
+    try:
+        if request.content_type == 'application/json':
+            payload = json.loads(request.body)
+        else:
+            payload = json.loads(request.POST.get('data', '{}'))
+            
+        tac_string = payload.get("tac", "")
+        if not tac_string:
+            return JsonResponse({"error": "No TAC provided"}, status=400)
+            
+        graph_data = parse_tac_to_graph(tac_string)
+        return JsonResponse({"success": True, "data": graph_data})
+        
+    except Exception as e:
+        return JsonResponse({"error": f"Parsing error: {str(e)}\n{traceback.format_exc()}"}, status=500)

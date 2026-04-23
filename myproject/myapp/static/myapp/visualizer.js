@@ -38,7 +38,61 @@
     $("moveDensityVal").textContent = `${$("moveDensity").value}%`;
   }
 
-  function generatePayload() {
+  function handleModeChange() {
+    const mode = document.querySelector('input[name="graphMode"]:checked').value;
+    if (mode === "random") {
+      $("randomControls").style.display = "block";
+      $("tacControls").style.display = "none";
+    } else {
+      $("randomControls").style.display = "none";
+      $("tacControls").style.display = "block";
+      if (!$("tacInput").value.trim()) {
+        $("tacInput").value = `// High Pressure & Move Optimized Example
+// Recommended: Set Registers (K) to 4 or 6
+
+// Initialize variables
+a = 5
+b = 10
+c = 15
+d = 20
+e = 25
+f = 30
+g = 35
+h = 40
+i = 45
+j = 50
+
+loop:
+  // High interference block
+  t1 = a + b
+  t2 = c + d
+  t3 = e + f
+  t4 = g + h
+  t5 = i + j
+  t6 = t1 * t2
+  t7 = t3 * t4
+  t8 = t6 + t7
+  t9 = t8 + t5
+
+  // Move chain (MOGRA minimizes these costs)
+  m1 = t9
+  m2 = m1
+  m3 = m2
+  m4 = m3
+  
+  // Feedback into variables
+  a = m4 + 1
+  counter = counter + 1
+  
+  if counter < 20 goto loop
+
+result = a
+return result`;
+      }
+    }
+  }
+
+  async function generatePayload() {
     const K = Number($("kReg").value);
     const N = Number($("nVar").value);
     const density = Number($("density").value) / 100;
@@ -53,38 +107,81 @@
       energy_penalty: +(rand() * 1.0).toFixed(2),
     }));
 
-    const variables = Array.from({ length: N }, (_, i) => ({
-      name: `v${i + 1}`,
-      frequency: +(1 + rand() * 9).toFixed(2),
-      loop_depth: +(rand() * 4).toFixed(2),
-      move_gain: +(rand() * 3).toFixed(2),
-      bank_penalty: +(rand() * 1.2).toFixed(2),
-      energy_penalty: +(rand() * 1.2).toFixed(2),
-      allowed_registers: [],
-    }));
+    const mode = document.querySelector('input[name="graphMode"]:checked').value;
+    
+    if (mode === "random") {
+      const variables = Array.from({ length: N }, (_, i) => ({
+        name: `v${i + 1}`,
+        frequency: +(1 + rand() * 9).toFixed(2),
+        loop_depth: +(rand() * 4).toFixed(2),
+        move_gain: +(rand() * 3).toFixed(2),
+        bank_penalty: +(rand() * 1.2).toFixed(2),
+        energy_penalty: +(rand() * 1.2).toFixed(2),
+        allowed_registers: [],
+      }));
 
-    const interference = [];
-    for (let i = 0; i < N; i++) {
-      for (let j = i + 1; j < N; j++) {
-        if (rand() < density) interference.push([variables[i].name, variables[j].name]);
-      }
-    }
-
-    const move_preferences = [];
-    for (let i = 0; i < N; i++) {
-      for (let j = i + 1; j < N; j++) {
-        if (rand() < moveDensity) {
-          move_preferences.push({
-            from: variables[i].name,
-            to: variables[j].name,
-            gain: +(0.5 + rand() * 2.5).toFixed(2),
-          });
+      const interference = [];
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          if (rand() < density) interference.push([variables[i].name, variables[j].name]);
         }
       }
-    }
 
-    payload = { registers, variables, interference, move_preferences, weights: {} };
-    
+      const move_preferences = [];
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          if (rand() < moveDensity) {
+            move_preferences.push({
+              from: variables[i].name,
+              to: variables[j].name,
+              gain: +(0.5 + rand() * 2.5).toFixed(2),
+            });
+          }
+        }
+      }
+
+      payload = { registers, variables, interference, move_preferences, weights: {} };
+      renderPayload();
+    } else {
+      // TAC Mode
+      $("btnGenerate").disabled = true;
+      $("btnGenerate").textContent = "Parsing TAC...";
+      try {
+        const csrftoken = getCookie('csrftoken');
+        const headers = { "Content-Type": "application/json" };
+        if (csrftoken) headers["X-CSRFToken"] = csrftoken;
+        
+        const response = await fetch("/api/parse_tac/", {
+          method: "POST", headers,
+          body: JSON.stringify({ tac: $("tacInput").value })
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || `HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Use parsed variables, interference, moves + generated registers
+        payload = { 
+          registers, 
+          variables: data.data.variables, 
+          interference: data.data.interference, 
+          move_preferences: data.data.move_preferences, 
+          weights: {} 
+        };
+        renderPayload();
+      } catch (err) {
+        console.error("TAC Parse error:", err);
+        $("traceOut").innerHTML = `<div style="color:red"><strong>Parse Error:</strong> ${err.message}</div>`;
+      } finally {
+        $("btnGenerate").disabled = false;
+        $("btnGenerate").textContent = "Generate Graph";
+      }
+    }
+  }
+
+  function renderPayload() {
     console.log("Payload generated:", payload);
     
     renderGraph("graphClassical", payload, { assignments: {}, spilled_variables: [] });
@@ -249,10 +346,12 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     ["kReg", "nVar", "density", "moveDensity"].forEach(id => $(id).addEventListener("input", updateLabels));
+    document.querySelectorAll('input[name="graphMode"]').forEach(el => el.addEventListener('change', handleModeChange));
     $("btnGenerate").addEventListener("click", generatePayload);
     $("btnRun").addEventListener("click", runAllocation);
 
     updateLabels();
+    handleModeChange();
     generatePayload();
   });
 })();

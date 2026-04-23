@@ -89,25 +89,41 @@
 
       <div class="viz-wrap">
         <div class="viz-controls">
+          <div class="mode-toggle" style="margin-bottom: 20px;">
+            <label style="display:inline; margin-right: 15px;"><input type="radio" name="graphMode" value="random" checked> Randomly Generate</label>
+            <label style="display:inline;"><input type="radio" name="graphMode" value="tac"> 3-Address Code</label>
+          </div>
+
           <label>Registers (K)
             <input id="kReg" type="range" min="2" max="12" value="6">
             <span id="kRegVal">6</span>
           </label>
-          <label>Variables (N)
-            <input id="nVar" type="range" min="6" max="40" value="18">
-            <span id="nVarVal">18</span>
-          </label>
-          <label>Interference Density
-            <input id="density" type="range" min="10" max="85" value="42">
-            <span id="densityVal">42%</span>
-          </label>
-          <label>Move-Preference Density
-            <input id="moveDensity" type="range" min="0" max="70" value="22">
-            <span id="moveDensityVal">22%</span>
-          </label>
-          <label>Seed
-            <input id="seed" type="number" min="1" value="42">
-          </label>
+
+          <div id="randomControls">
+            <label>Variables (N)
+              <input id="nVar" type="range" min="6" max="40" value="18">
+              <span id="nVarVal">18</span>
+            </label>
+            <label>Interference Density
+              <input id="density" type="range" min="10" max="85" value="42">
+              <span id="densityVal">42%</span>
+            </label>
+            <label>Move-Preference Density
+              <input id="moveDensity" type="range" min="0" max="70" value="22">
+              <span id="moveDensityVal">22%</span>
+            </label>
+            <label>Seed
+              <input id="seed" type="number" min="1" value="42">
+            </label>
+          </div>
+
+          <div id="tacControls" style="display: none; margin-bottom: 1em;">
+            <label>3-Address Code
+              <textarea id="tacInput" rows="8" style="width: 100%; border-radius: 6px; padding: 10px; font-family: monospace; border: 1px solid #ccc; font-size: 14px; background: #fafafa" placeholder="L1:
+a = b + c
+goto L2"></textarea>
+            </label>
+          </div>
 
           <div class="actions">
             <button id="btnGenerate" class="btn btn-outline" type="button">Generate Graph</button>
