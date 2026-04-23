@@ -6,40 +6,39 @@
   let payload = null;
 
   const TAC_EXAMPLES = [
-`L0:
-t1 = a + b
-t2 = t1 * c
-x = t2
-y = x
-if y < d goto L1
-z = y + e
-goto L2
-L1:
-z = y - e
-L2:
-ret z`,
-`L0:
-i = n
-sum = 0
-L1:
-if i <= 0 goto L2
-sum = sum + i
-i = i - 1
-goto L1
-L2:
-ret sum`,
-`L0:
-p = a + b
-q = p + c
-r = q
-if r > d goto L1
-m = r + e
-goto L2
-L1:
-m = r - e
-L2:
-n = m + p
-ret n`
+`
+dummy1 = 1
+dummy2 = 2
+dummy3 = 3
+dummy4 = 4
+z_accumulator = 0
+loop:
+z_accumulator = z_accumulator + dummy1
+if z_accumulator < 500 goto loop
+result = z_accumulator + dummy2 + dummy3 + dummy4
+ret result`,
+`
+L0:
+a = 100
+b = a
+c = b
+d = c
+e = 200
+f = e
+g = 5
+h = d + f + g
+ret h`,
+`
+n1 = 10
+n2 = 20
+n3 = 30
+n4 = 40
+m_core = n1 + n2
+m_core = m_core + n3
+m_core = m_core + n4
+o1 = m_core
+o2 = m_core
+ret o2`
   ];
   let exampleIndex = 0;
 
@@ -214,10 +213,10 @@ ret n`
       ["Assigned Variables", classical.metrics.assigned, mogra.metrics.assigned],
       ["Spilled Variables", classical.metrics.spills, mogra.metrics.spills],
       ["Spill Ratio (%)", classical.metrics.spill_ratio, mogra.metrics.spill_ratio],
+      ["Total Spill Cost (lower better)", classical.metrics.spill_cost, mogra.metrics.spill_cost],
       ["Move Penalty (lower better)", classical.metrics.move_penalty, mogra.metrics.move_penalty],
       ["Bank Cost (lower better)", classical.metrics.bank_cost, mogra.metrics.bank_cost],
       ["Energy Cost (lower better)", classical.metrics.energy_cost, mogra.metrics.energy_cost],
-      ["Runtime (ms)", classical.runtimeMs, mogra.runtimeMs],
     ];
     $("compareBody").innerHTML = rows
       .map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`)

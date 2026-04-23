@@ -33,15 +33,15 @@ def api_allocate(request):
 
     try:
         # Classical allocator
-        t0_classical = time.time()
+        t0_classical = time.perf_counter()
         classical_result = simple_allocate(payload)
-        t_classical = (time.time() - t0_classical) * 1000
+        t_classical = (time.perf_counter() - t0_classical) * 1000
 
         # MOGRA allocator
-        t0_mogra = time.time()
+        t0_mogra = time.perf_counter()
         mogra = MOGRAAllocator(payload)
         mogra_result = mogra.allocate()
-        t_mogra = (time.time() - t0_mogra) * 1000
+        t_mogra = (time.perf_counter() - t0_mogra) * 1000
 
         # Compute metrics
         def metrics(result):
@@ -65,10 +65,19 @@ def api_allocate(request):
                 bank_cost += float(var.get("bank_penalty", 0)) + float(reg.get("bank_penalty", 0))
                 energy_cost += float(var.get("energy_penalty", 0)) + float(reg.get("energy_penalty", 0))
 
+            total_spill_cost = 0.0
+            for spilled_var in result["spilled_variables"]:
+                var = next((v for v in payload["variables"] if v["name"] == spilled_var), {})
+                # Use a simplified priority for cost: frequency * (1 + loop_depth)
+                freq = float(var.get("frequency", 1.0))
+                loop = float(var.get("loop_depth", 0.0))
+                total_spill_cost += freq * (2 ** loop)
+
             return {
                 "assigned": assigned,
                 "spills": spills,
                 "spill_ratio": round(spill_ratio, 1),
+                "spill_cost": round(total_spill_cost, 2),
                 "move_penalty": round(move_penalty, 2),
                 "bank_cost": round(bank_cost, 2),
                 "energy_cost": round(energy_cost, 2),
