@@ -107,7 +107,122 @@ h1{margin:0;font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.12}
 }
 .viz-controls label{display:grid;gap:6px;margin:0 0 10px}
 .viz-controls input[type="range"], .viz-controls input[type="number"]{width:100%}
-.actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.viz-controls {
+  display: grid;
+  gap: 14px;
+}
+.field-label {
+  margin-top: 4px;
+  font-weight: 600;
+  color: #0f2b5b;
+}
+.tac-input {
+  width: 100%;
+  min-height: 260px;
+  box-sizing: border-box;
+  resize: vertical;
+
+  padding: 12px 14px;
+  border: 1px solid #cfd8e6;
+  border-radius: 12px;
+  background: #f8fbff;
+  color: #0b1f44;
+
+  font: 500 16px/1.5 "Consolas", "Courier New", monospace;
+  white-space: pre;
+  tab-size: 2;
+}
+.tac-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.viz-controls .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.mock-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+.mock{background:var(--surface);border:1px solid var(--border);border-radius:20px;
+  box-shadow:var(--shadow);padding:16px;}
+.mock h3{margin:4px 0 14px}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{border:1px solid var(--border);background:#f8fbff;border-radius:12px;padding:12px;}
+.kpi span{display:block;color:#5c739f;font-size:.86rem}
+.kpi strong{display:block;margin-top:2px}
+
+/* Section */
+.section{padding:34px 0}
+.section h2{font-size:clamp(1.45rem,3vw,2.1rem);margin:0 0 8px}
+.section p.lead{color:var(--muted);margin:0 0 20px}
+
+/* Project info card */
+.info-card{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  box-shadow:0 8px 20px rgba(16,53,120,.06);padding:0 0 14px;
+}
+.section-head{
+  background:#3436b8;color:#fff;padding:12px 16px;border-radius:16px 16px 0 0;
+  font-weight:600;letter-spacing:.2px;
+}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}
+.info-list{margin:6px 0 0 0;padding-left:20px}
+.info-list li{margin:8px 0}
+.info-list li::marker{color:#2d3ebc}
+.team-table{
+  width:100%;border-collapse:collapse;background:#fff;border:1px solid #b8c5eb;
+}
+.team-table th,.team-table td{
+  border:1px solid #b8c5eb;padding:8px 10px;text-align:left;font-size:.95rem;
+}
+.team-table th{background:#f3f7ff}
+
+/* visualizer */
+.viz-wrap{display:grid;grid-template-columns:.95fr 1.05fr;gap:16px}
+.viz-controls,.panel,.compare-card,.ack-card{
+  background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;
+  box-shadow:0 8px 18px rgba(16,53,120,.06)
+}
+.viz-controls label{display:grid;gap:6px;margin:0 0 10px}
+.viz-controls input[type="range"], .viz-controls input[type="number"]{width:100%}
+.viz-controls {
+  display: grid;
+  gap: 14px;
+}
+.field-label {
+  margin-top: 4px;
+  font-weight: 600;
+  color: #0f2b5b;
+}
+.tac-input {
+  width: 100%;
+  min-height: 260px;
+  box-sizing: border-box;
+  resize: vertical;
+
+  padding: 12px 14px;
+  border: 1px solid #cfd8e6;
+  border-radius: 12px;
+  background: #f8fbff;
+  color: #0b1f44;
+
+  font: 500 16px/1.5 "Consolas", "Courier New", monospace;
+  white-space: pre;
+  tab-size: 2;
+}
+.tac-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.viz-controls .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
 
 .viz-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .panel h3{margin:0 0 8px}

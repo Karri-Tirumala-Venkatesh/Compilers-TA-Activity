@@ -93,25 +93,27 @@
             <input id="kReg" type="range" min="2" max="12" value="6">
             <span id="kRegVal">6</span>
           </label>
-          <label>Variables (N)
-            <input id="nVar" type="range" min="6" max="40" value="18">
-            <span id="nVarVal">18</span>
-          </label>
-          <label>Interference Density
-            <input id="density" type="range" min="10" max="85" value="42">
-            <span id="densityVal">42%</span>
-          </label>
-          <label>Move-Preference Density
-            <input id="moveDensity" type="range" min="0" max="70" value="22">
-            <span id="moveDensityVal">22%</span>
-          </label>
-          <label>Seed
-            <input id="seed" type="number" min="1" value="42">
-          </label>
+
+          <label for="tacInput" class="field-label">3AC Input</label>
+          <textarea id="tacInput" class="tac-input" rows="14" spellcheck="false">
+L0:
+t1 = a + b
+t2 = t1 * c
+x = t2
+y = x
+if y < d goto L1
+z = y + e
+goto L2
+L1:
+z = y - e
+L2:
+ret z
+          </textarea>
 
           <div class="actions">
-            <button id="btnGenerate" class="btn btn-outline" type="button">Generate Graph</button>
+            <button id="btnGenerate" class="btn btn-outline" type="button">Build Graph from 3AC</button>
             <button id="btnRun" class="btn btn-primary" type="button">Run Allocation</button>
+            <button id="btnExample" class="btn btn-outline" type="button">Generate Example</button>
           </div>
         </div>
 
