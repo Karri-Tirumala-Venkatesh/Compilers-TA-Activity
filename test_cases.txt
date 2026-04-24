@@ -1,58 +1,44 @@
 Register Allocation Visualizer - Suggested Test Cases
 =====================================================
 
-How to use:
-1) Start server: python manage.py runserver
-2) Open homepage in browser
-3) Set sliders/seed
-4) Click "Generate Graph" then "Run Allocation"
-5) Compare Classical vs MOGRA metrics + graph colors/spills
+Example 1: High Pressure Register Allocation
+a_temp1 = 10
+a_temp2 = 20
+a_temp3 = 30
+a_temp4 = 40
+a_temp5 = 50
+a_temp6 = 60
+z_important_sum = 0
+loop:
+z_important_sum = z_important_sum + a_temp1
+z_important_sum = z_important_sum + a_temp2
+if z_important_sum < 1000 goto loop
+ret z_important_sum
 
------------------------------------------------------
-TC1: Easy / Low Pressure
-K=8, N=10, Interference=20%, MovePref=10%, Seed=42
-Expected:
-- Very low or zero spills
-- Both algorithms assign most/all variables
-- Similar runtime
+Example 2: Move Optimization (Copy Chains)
+x_src = 100
+a_copy = x_src
+y_src = 200
+b_copy = y_src
+z_src = 300
+c_copy = z_src
+final_res = a_copy + b_copy + c_copy
+ret final_res
 
-TC2: Balanced
-K=6, N=18, Interference=42%, MovePref=22%, Seed=42
-Expected:
-- Moderate spill pressure
-- MOGRA should often reduce move/bank/energy metrics
-
-TC3: Tight Registers
-K=4, N=20, Interference=60%, MovePref=35%, Seed=42
-Expected:
-- Noticeable spills
-- MOGRA may preserve high-priority variables better
-
-TC4: Stress
-K=3, N=24, Interference=75%, MovePref=50%, Seed=42
-Expected:
-- Heavy spilling
-- Clear distinction in decision trace and spill candidates
-
-TC5: Sparse Graph
-K=6, N=16, Interference=10%, MovePref=15%, Seed=99
-Expected:
-- Minimal spills
-- Stable assignments across repeated runs with same seed
-
------------------------------------------------------
-Regression / Stability Checks
-A) Same seed reproducibility:
-   Run same inputs 3 times -> graph/metrics should match.
-
-B) Seed variation:
-   Change seed only (42 -> 99) -> graph and results should change.
-
-C) Boundary checks:
-   - Minimum K: 2, N: 6
-   - Higher load: K: 12, N: 40
-   Ensure page remains responsive and API returns valid JSON.
-
-D) API health (optional manual):
-POST /api/allocate/ with valid JSON payload
-Expected: JSON response with "classical" and "mogra" objects.
+Example 3: Complex Interference (Arithmetic Tree)
+t1 = 1
+t2 = 2
+t3 = 3
+t4 = 4
+t5 = 5
+t6 = 6
+t7 = 7
+t8 = 8
+i = t1 + t2
+j = t3 + t4
+k = t5 + t6
+l = t7 + t8
+m = i * j
+n = k * l
+res = m + n
+ret res

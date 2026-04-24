@@ -7,38 +7,44 @@
 
   const TAC_EXAMPLES = [
 `
-dummy1 = 1
-dummy2 = 2
-dummy3 = 3
-dummy4 = 4
-z_accumulator = 0
+a_temp1 = 10
+a_temp2 = 20
+a_temp3 = 30
+a_temp4 = 40
+a_temp5 = 50
+a_temp6 = 60
+z_important_sum = 0
 loop:
-z_accumulator = z_accumulator + dummy1
-if z_accumulator < 500 goto loop
-result = z_accumulator + dummy2 + dummy3 + dummy4
-ret result`,
+z_important_sum = z_important_sum + a_temp1
+z_important_sum = z_important_sum + a_temp2
+if z_important_sum < 1000 goto loop
+ret z_important_sum`,
 `
-L0:
-a = 100
-b = a
-c = b
-d = c
-e = 200
-f = e
-g = 5
-h = d + f + g
-ret h`,
+x_src = 100
+a_copy = x_src
+y_src = 200
+b_copy = y_src
+z_src = 300
+c_copy = z_src
+final_res = a_copy + b_copy + c_copy
+ret final_res`,
 `
-n1 = 10
-n2 = 20
-n3 = 30
-n4 = 40
-m_core = n1 + n2
-m_core = m_core + n3
-m_core = m_core + n4
-o1 = m_core
-o2 = m_core
-ret o2`
+t1 = 1
+t2 = 2
+t3 = 3
+t4 = 4
+t5 = 5
+t6 = 6
+t7 = 7
+t8 = 8
+i = t1 + t2
+j = t3 + t4
+k = t5 + t6
+l = t7 + t8
+m = i * j
+n = k * l
+res = m + n
+ret res`
   ];
   let exampleIndex = 0;
 
